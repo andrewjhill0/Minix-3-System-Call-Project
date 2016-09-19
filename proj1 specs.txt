@@ -1,0 +1,53 @@
+Project 1
+
+COP 4600 
+Fall 2012
+
+Due: Sept. 19, 2012
+
+Brief Description:
+Implement a new system call in Minix 3, along with a C program that allows it to be exercised from the shell.
+Demonstrate the system call by building your modified Minix 3 with TA, compiling your demo program, then running the demo program on your modified Minix 3. 
+
+Details of System Call:
+The new system call will return the amount of time left in the calling process' time quantum.  The new 
+call will be named get_ticks_left, with no arguements. It will return the number of ticks left in the
+calling process' time quantum. 
+
+Library procedure:
+You will also need to implement a library procedure that can be referenced by a C program you write to
+demonstrate the call. It will be named quantum_left() and will be of type int. It will set up the 
+registers and stack, then trap to the OS to get it to invoke the get_ticks_left routine, and will 
+return the value received in the reply message. 
+
+Test program:
+You will write a program called testtq.c that enters a loop that executes N times. Inside the outer
+loop, an inner loop is called that calls quantum_left() and prints the resulting value to a string
+it builds in a buffer. When the inner loop has executed M times, it exits and outputs the string
+in the buffer (that has been nicely formatted) so that the 10 values of the time quantum remaining
+are output to stdout, followed by a newline. N and M are #defined constants. 
+
+Example:
+Your program may #define N to be 100 and M to be 10. It will have to declare a buffer large enough
+to collect the output for 10 numbers per line. The output per line may appear as:
+Time left = 23, 23, 22, 21, 21, 20, 19, 19, 18, 18
+(The numbers used are only for demonstration purposes - yours will be different.)
+Since the outer loop executes 100 times, 100 such lines would be printed by the program. 
+
+Documentation:
+You will provide the following text documents (in .txt format).
+man page - a manual page for your ggpp program 
+programming documentation - this document will explain how you implemented the new system call, including what changes were made to which files and why each change was made.  It will include description of how testing was performed along with any known bugs.
+
+Submission:
+You will tar all modified source code files from Minix3, along with the documentation, new source code files for the program and its makefile, using the tar facility.  The tarball will unpack in the current directory, and typing "make testtq" should compile the testtq.c program. 
+
+Demonstration:
+You will sign up to demonstrate your code the the TA on the sign-up sheet on the instructor's door (CSE-E346).  You will have 1/2 hour to demo and to answer questions.  Do not be late for your demo. Missed 
+demo appointments will deduct 5 points from your score for each missed appointment (defined as 15 or
+more minutes late). 
+
+
+Helpful resources:
+The Minix3.org website has many helpful documents, and we will add documents to the class website of a more specific nature.  
+

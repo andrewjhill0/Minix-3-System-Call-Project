@@ -1,0 +1,67 @@
+Andrew Hill Project 1
+Documentation for System call Implementation
+
+List of Modified Files:
+
+/usr/src/include/minix/callnr.h
+/usr/src/servers/pm/misc.c
+/usr/src/servers/pm/table.c
+/usr/src/servers/pm/proto.h
+/usr/src/kernel/system.h
+/usr/src/kernel/system/Makefile.inc
+/usr/src/kernel/system.c
+/usr/src/include/minix/com.h
+/usr/src/include/minix/
+
+
+List of newly created files:
+
+/usr/include/quantum_left.h
+/usr/src/kernel/do_sample.c
+/home/proj1/testtq.c
+/home/proj1/test.c
+/home/proj1/makefile
+
+Implementation Plan (includes testing procedures):
+
+1. I first needed to establish the basis for a new system call within the minix OS.  I added the necessary lines for establishing a new system call into the table.c and proto.h files in order to tell the OS that a new system call exists, and for it to be associated with a number (69 in this case), though the system does not yet associate the new call name with a number.
+
+2. I modify callnr.h to assign my new system call a system call number so that I can call the system call using _syscall(PM_PROC_NR,69,&m)  from my library file.
+
+3. Next I created the system call handler within the misc.c file.  I gave it the same name as used in the table.c and proto.h files: get_ticks_left, and I simply defined the system call as a print statement.  This way, I can easily test my system call implementation without having to worry about making a complex system call that might not compile correctly.
+
+4. I then created the library header file quantum_left.h in order to make it easier to call my system call from a user program.  I defined it so that any user program can just include my library file and then call quantum_left() in order to call get_ticks_left.
+
+5. I then compiled /usr/src/servers  and made a new boot image and install the revision.  From there, I made a test program test.c in my home directory and all it did was call quantum_left(), which printed to the screen "test".  This showed me that I had implemented everything I needed to make a new system call.
+
+6.  The next step was to descend into the next level, and that was to make a kernel call from the system call within the misc.c file.
+
+7.  I added the int do_sample(struct proc *caller, message *m_ptr); line into the system.h file.  
+ 
+8.  I then defined my kernel call within my do_sample.c file.  At this time it simply makes a print statement that shows me that I have successfully called the kernel call from my system call.
+
+9.  I then need to add do_sample.c to my kernel/system/Makefile.inc file for compilation later.
+
+10.  I then make sure that the system call is mapped properly within the system.c file using the line: map(SYS_SAMPLE, do_sample);  and then within the com.h file I added the same mapped name to the list and incrememnt the total number of SYS_CALLS to 57 from 56
+
+11. With my kernel call now defined, i add the line _kernel_call(SYS_SAMPLE, &m) to my misc.c file so that it will call my newly constructed kernel call.
+
+12.  I then ran my same test.c program and I now have two print statements (one from each call).
+
+13.  The next steps will now take my system and kernel call impelementation and simply modify each call to do something more than a simple print statement.  Now that I now my structure is sound, I can do something more complicated and this will make debugging easier to solve.
+
+14.  I start with the system call.  I know I need to pass the endpoint of the calling process into the message parameter in my kernel call.  This way, the kernel call knows what process to check the remaining ticks on.  I can do this by accessing the mp->mp_endpoint variable form the mproc.h included file and assigning it to m.PR_ENDPT.  
+
+15.  From there, I will pass the message to the kernel call, which will return the int of my remaining ticks of the process within the message.
+
+16.  The do_sample.c file (the kernel call file)  will test to make sure that the pointer I pass it is indeed an end pointer or wil return an EINVAL error.  
+
+17.  From there, the kernel call find the process address from the passed process end pointer and then pull from the process its p_cpu_time_left variable and cast it as an int and return it.  
+
+18.  Just in case it does not do this, the ticksleft integer variable is assigned to 5 so that I will know in the printout of the buffer whether or not it was able to access process->p_cpu_time_left or not.
+
+19.  THen the kernel call and system call will return all the way through the library call to the user program and give the user program the current number of ticks left.
+
+20.  Out user program will then process this as defined in that manual document.
+
+21.  There are no "known" bugs at this time.

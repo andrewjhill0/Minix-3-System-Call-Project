@@ -1,0 +1,21 @@
+Andrew Hill Project 1
+Documentation for GGPP program - testtq.c
+
+
+This program will be a basic runtime program with no user input. 
+
+This program will declare a N times M buffer that will be filled with integer values.
+
+These values will be collected from a library call that has been included (quantum_left.h)
+
+The main part of the program will have a nested for loop that will fill the array with values and print them out on a new line M times with N lines.
+
+After the program has finished buffering and printing all values, the program will then show that it possible to return to the beginning of the array again and prints the first value in the array.  
+
+This way, we know that our buffered values still exist and still can be used for further undefined purposes.
+
+This program does not support negative numbers for any of its variables and does not have any checking for this, so whoever alters the source code should be careful of doing this.
+
+There are no known user bugs as there's no user input for this program.  It simply runs and depends on the library and system calls to be implemented properly.
+
+This program is designed with GCC compiler already installed into Minix 3, and the makefile requires it.
